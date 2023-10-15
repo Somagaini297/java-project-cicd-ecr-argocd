@@ -2,7 +2,7 @@ version: 0.2
 
 phases:
 
-  prebuild:
+  pre_build:
     commands:
       - mvn clean install
       - echo Loggin into Amazon ECR...
@@ -19,7 +19,7 @@ phases:
       - docker build -t  $REPOSITORY_URI:latest .
       - docker tag $REPOSITPRY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   
-  postbuild:
+  post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
