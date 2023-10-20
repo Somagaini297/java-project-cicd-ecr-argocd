@@ -13,9 +13,14 @@ hooks:
     - location: scripts/prereqs.sh
       timeout: 300
       runas: root 
+
+  BeforeInstall:
+    - location: scripts/prereqs.sh
+      timeout: 300
+      runas: root
     
        
   ApplicationStart:
-    - location: scripts/run_docker_commands.sh
+    - location: scripts/deploy-service.sh
       timeout: 300
       runas: root
