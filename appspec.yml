@@ -14,8 +14,8 @@ hooks:
       timeout: 300
       runas: root 
 
-  BeforeInstall:
-    - location: scripts/prereqs.sh
+  AfterInstall:
+    - location: scripts/cluster-auth.sh
       timeout: 300
       runas: root
     
