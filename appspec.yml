@@ -5,6 +5,10 @@ hooks:
 
   BeforeInstall:
 
+    - location: scripts/prereqs.sh
+      timeout: 300
+      runas: root
+
     - location: scripts/deploy-service.sh
       timeout: 300
       runas: root
