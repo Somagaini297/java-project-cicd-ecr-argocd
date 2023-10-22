@@ -4,24 +4,13 @@ os: linux
 hooks:
 
   BeforeInstall:
-    - location: scripts/prereqs.sh
-      timeout: 300
-      runas: root
-    - location: scripts/create_iam_role.sh
-      timeout: 300
-      runas: root
 
-  AfterInstall:
-    - location: scripts/cluster-auth.sh
-      timeout: 300
-      runas: root
-         
-  ApplicationStart:
     - location: scripts/deploy-service.sh
       timeout: 300
       runas: root
   
-  ValidateService:
+  AfterInstall:
+ 
     - location: scripts/validate-service.sh
       timeout: 300
       runas: root
