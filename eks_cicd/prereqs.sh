@@ -42,7 +42,7 @@ fi
 
 # eksctl
 if ! type eksctl >/dev/null 2>&1; then
-	curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+	curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xzvf -C /tmp
 	mv /tmp/eksctl $HOME/bin
 	echo 'eksctl installed'
 else
