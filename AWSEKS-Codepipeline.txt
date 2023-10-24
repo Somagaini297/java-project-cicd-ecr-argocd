@@ -1,0 +1,92 @@
+Prerequisites
+1) awscli version2
+sudo yum remove awscli --> to remove previuos installed awscli
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html --> link
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+2) kubectl installation
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html --> link
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.9/2023-10-17/bin/linux/amd64/kubectl.sha256
+chmod +x ./kubectl
+mv kubectl /usr/local/bin
+kubectl version
+
+3) eksctl installation
+https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-eksctl.html --> link
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+4) Iam Authenticator installation
+https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html --> link
+curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.6.11/aws-iam-authenticator_0.6.11_linux_amd64
+chmod +x ./aws-iam-authenticator
+mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+aws-iam-authenticator help
+--------------------------------------------------
+Create eks cluster
+
+eksctl create cluster -f cluster.yml
+
+Create Dockerfile to build an image and push to ECR
+
+1)Retrieve an authentication token and authenticate your Docker client to your registry.
+Use the AWS CLI:
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 649787745281.dkr.ecr.us-east-1.amazonaws.com
+Note: If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed.
+
+2) Build your Docker image using the following command. For information on building a Docker file from scratch see the instructions here 
+. You can skip this step if your image is already built:
+docker build -t cicd-demo .
+
+3)After the build completes, tag your image so you can push the image to this repository:
+docker tag cicd-demo:latest 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo:latest
+
+4) Run the following command to push this image to your newly created AWS repository:
+docker push 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo:latest
+
+Note: We need to copy the image uri to deployment file
+
+Run deployment and service files in eks cluster
+
+and kubectl rollout restart -f eks_cicd/deployment.yaml --> run this command to fetch newly updated image
+
+This is manually updating CICD
+----------------------------------------------------------------------------------------------------------------
+Now automate the CICD using AWS Codepipeline
+
+Create Pieplineand updathe the stages
+
+In build stage update the following in environment variables section
+
+AWS_DEFAULT_REGION
+
+AWS_CLUSTER_NAME
+
+AWS_ACCOUNT_ID
+
+IMAGE_REPO_NAME
+
+IMAGE_TAG
+
+--> Create IAM Role for codebuild-->
+Role Name: CodeBuildKubectlRole
+Policies
+
+AWSCodeCommitFullAccess
+AmazonEC2ContainerRegistryFullAccess
+AmazonS3FullAccess
+CloudWatchLogsFullAccess
+AWSCodeBuildAdminAccess
+eks-describe
+-----> Role should be updated in codebuild section
+------> The above role created to access eks cluster
+IF we dont't use eksctl
+kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
+do kubectl apply -f aws-auth.yaml
+--------------------------------------------------------------------------
+Build image error
+
+The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64) and no specific platform was requested
