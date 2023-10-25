@@ -8,7 +8,7 @@ sudo ./aws/install
 aws --version
 2) kubectl installation
 https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html --> link
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.9/2023-10-17/bin/linux/amd64/kubectl.sha256
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.9/2023-10-17/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mv kubectl /usr/local/bin
 kubectl version
