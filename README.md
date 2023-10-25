@@ -15,6 +15,7 @@ mysql> create table user(name varchar(100),password varchar(100), address varcha
 
 mysql> select * from User;
 
+
 Go to server
 
 1. yum install git -y 
