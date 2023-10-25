@@ -90,3 +90,5 @@ do kubectl apply -f aws-auth.yaml
 Build image error
 
 The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64) and no specific platform was requested
+
+eksctl create iamidentitymapping --cluster cicd-demo --arn arn:aws:iam::649787745281:role/CodeBuildKubectlRole --group system:masters --username CodeBuildKubectlRole
