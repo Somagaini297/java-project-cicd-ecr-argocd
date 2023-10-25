@@ -18,6 +18,7 @@ phases:
 
   pre_build:
     commands:
+      - mvn clean install
       - echo Logging in to Amazon EKS...
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
       - echo check config 
@@ -25,9 +26,6 @@ phases:
       - echo check kubectl access
       - kubectl get svc
       - echo Logging in to Amazon ECR...
-      - amazon-linux-extras install docker=latest -y
-      - systemctl start docker
-      - systemctl status docker
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
       - docker pull $REPOSITORY_URI:$IMAGE_TAG
@@ -48,3 +46,9 @@ phases:
       - echo Push the latest image to cluster
       - kubectl apply -f eks_cicd/deployment.yml
       - kubectl rollout restart -f eks_cicd/deployment.yml
+
+  artifacts:
+  files:
+     - imagedefinitions.json
+     - target/**/*.war
+  discard-paths: yes
