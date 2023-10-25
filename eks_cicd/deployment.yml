@@ -18,7 +18,7 @@ spec:
         app: cicd-demo
     spec:
       containers:
-        - image: 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo:latest
+        - image: 649787745281.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY_URI:$IMAGE_TAG
           imagePullPolicy: Always
           name: cicd-demo
           ports:
