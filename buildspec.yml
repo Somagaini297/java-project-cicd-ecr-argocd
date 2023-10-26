@@ -30,9 +30,8 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo building the docker image
-      - service docker status
       - systemctl start docker
-      - service docker status
+      - systemctl status docker
       - docker build --platform linux/amd64 -t  $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   
