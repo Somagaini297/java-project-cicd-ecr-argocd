@@ -22,13 +22,13 @@ phases:
       - echo Loggin into Amazon ECR...
       - aws --version
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 649787745281.dkr.ecr.us-east-1.amazonaws.com
-      - REPOSITORY_URI=649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo
+      - REPOSITORY_URI=649787745281.dkr.ecr.us-east-1.amazonaws.com/cicddemo
       
   build:
     commands:
       - echo Build completed on `date`
       - echo building the docker image
-      - docker build --platform linux/arm64/v8 --cache-from $REPOSITORY_URI:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker build --platform linux/arm64/v8 -t $IMAGE_REPO_NAME:$IMAGE_TAG .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       
   post_build:
