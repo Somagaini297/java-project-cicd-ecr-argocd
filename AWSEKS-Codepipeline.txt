@@ -9,6 +9,8 @@ https://medium.com/@gurpreet.singh_89/simplifying-kubernetes-operations-with-ter
    Note: Here we have to disable the webhook push trigger for automatic build due to this two time build job is running
    One through Webhook and ohter through codepiepline
 5) configuring AWS EKS Cluster for CI/CD
+IAM Permissions for AWS User
+1) AdministratorAccess 2) AmazonEC2ContainerRegistryFullAccess 3) AmazonEC2FullAccess 4) AmazonEKSClusterPolicy
 ---------------------------------------------------------------------------------------------
 Steps to be followed
 Step1) Create ECR Repository and with push commands update buildspec file and deployment file
