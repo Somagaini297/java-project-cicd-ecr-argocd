@@ -1,11 +1,35 @@
-Prerequisites
+AWS EKS CI/CD: Cluster Set-up, App containerization & Deployment, CodePipeline| DevOps With AWS
+-----------------------------------------------------------------
+devopslearning.medium.com/ci-cd-pipeline-for-eks-using-codecommit-codebuild-codepipeline-and-elastic-container-100f4b85e434 --> for AWS Codepipeline reference
+https://medium.com/@gurpreet.singh_89/simplifying-kubernetes-operations-with-terraform-argocd-and-gitops-on-aws-part-4-f7dcbbd42389 --->Codepipeline CICD--Argocd
+1) Introduction to AWS EKS
+2) Setup EKS Cluster using eksctl
+3) Deploy Java app using kubectl
+4) Setting Up CI/CD with AWS Codepipeline + AWS CodeCommit + AWS CodeBuild
+   Note: Here we have to disable the webhook push trigger for automatic build due to this two time build job is running
+   One through Webhook and ohter through codepiepline
+5) configuring AWS EKS Cluster for CI/CD
+---------------------------------------------------------------------------------------------
+Steps to be followed
+Step1) Create ECR Repository and with push commands update buildspec file and deployment file
+Step2) Create an EC2 Instance with t2.medium and create EKS CLuster
+- Install awscli-v2, kubectl, eksctl and iam-authenticator
+- cofigure iam user with admin credentials to communicate with aws resources (Need to add ekscluster policy
+- Configure iam identity for Codebuild role
+- Install git to download source code repo
+- creare eks cluster and do deploy and service files
+step3) Come to code build--> create code build project and need to update env varibales also
+step4) Create code pipeline 
+--------------------------------------------------------------------------------------Prerequisites------------------------------------------------------------
 1) awscli version2
-sudo yum remove awscli --> to remove previuos installed awscli
+sudo yum remove awscli -y --> to remove previuos installed awscli
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html --> link
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
-sudo ./aws/install
+./aws/install
+mv /usr/local/bin/aws /usr/bin/
 aws --version
+(mv /usr/local/bin/aws /usr/bin/ if aws --version not works, we need to do)
 2) kubectl installation
 https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html --> link
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.9/2023-10-17/bin/linux/amd64/kubectl
@@ -25,10 +49,37 @@ chmod +x ./aws-iam-authenticator
 mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
 echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
 aws-iam-authenticator help
---------------------------------------------------
+To get details about the current IAM identity
+
+The following get-caller-identity command displays information about the IAM identity used to authenticate the request. The caller is an IAM user.
+
+aws sts get-caller-identity
+Output:
+
+{
+    "UserId": "AIDASAMPLEUSERID",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/DevAdmin"
+}
+
+yum install git -y --->to download git repo
+--------------------------------------------------EKS cluster creation on EC2 Instance------------------------------------------------------------
+Configure IAM User with Admin previliges and install docker
+
 Create eks cluster
 
 eksctl create cluster -f cluster.yml
+
+Install docker and make sure its running and give ecr login command
+amazon-linux-extras install docker -y --> to install docker
+
+systemctl start docker--> To start docker
+
+systemctl status docker --> To check its running or not
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 649787745281.dkr.ecr.us-east-1.amazonaws.com --> To login to ECR
+
+eksctl create iamidentitymapping --cluster cicd-demo --arn arn:aws:iam::649787745281:role/CodeBuildKubectlRole --group system:masters --username CodeBuildKubectlRole
 
 Create Dockerfile to build an image and push to ECR
 
@@ -87,8 +138,19 @@ IF we dont't use eksctl
 kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
 do kubectl apply -f aws-auth.yaml
 --------------------------------------------------------------------------
+Errors
 Build image error
 
 The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64) and no specific platform was requested
 
 eksctl create iamidentitymapping --cluster cicd-demo --arn arn:aws:iam::649787745281:role/CodeBuildKubectlRole --group system:masters --username CodeBuildKubectlRole
+
+[root@ip-172-31-55-243 eks_cicd]# eksctl create iamidentitymapping --cluster cicd-demo --arn arn:aws:iam::649787745281:role/CodeBuildKubectlRole --group system:masters --username CodeBuildKubectlRole
+2023-10-26 14:15:25 [ℹ]  checking arn arn:aws:iam::649787745281:role/CodeBuildKubectlRole against entries in the auth ConfigMap
+2023-10-26 14:15:25 [ℹ]  adding identity "arn:aws:iam::649787745281:role/CodeBuildKubectlRole" to auth ConfigMap
+
+Need to give ecr authentication
+[root@ip-172-31-55-243 ~]# docker pull 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo:build-66e44b9d-b462-4b3f-86fe-b4ee57ec6f1b
+Error response from daemon: pull access denied for 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo, repository does not exist or may require 'docker login': denied: Your authorization token has expired. Reauthenticate and try again.
+[root@ip-172-31-55-243 ~]# 
+
