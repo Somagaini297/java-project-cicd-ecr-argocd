@@ -22,6 +22,13 @@ Step2) Create an EC2 Instance with t2.medium and create EKS CLuster
 - creare eks cluster and do deploy and service files
 step3) Come to code build--> create code build project and need to update env varibales also
 step4) Create code pipeline 
+5) Configure IAM user
+aws configure
+
+AWS Access Key ID [None]: 
+AWS Secret Access Key [None]: 
+Default region name [None]: us-east-1
+Default output format [None]: json
 --------------------------------------------------------------------------------------Prerequisites------------------------------------------------------------
 1) awscli version2
 sudo yum remove awscli -y --> to remove previuos installed awscli
