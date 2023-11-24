@@ -27,14 +27,14 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo building the docker image
-      - docker build --platform linux/amd64 -t cicd-demo .
-      - docker tag cicd-demo:latest 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo:latest
+      - docker build --platform linux/amd64 -t aws-demo .
+      - docker tag aws-demo:latest 649787745281.dkr.ecr.us-east-1.amazonaws.com/aws-demo:latest
   
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push 649787745281.dkr.ecr.us-east-1.amazonaws.com/cicd-demo:latest
+      - docker push 649787745281.dkr.ecr.us-east-1.amazonaws.com/aws-demo:latest
       - echo Writing image definitions file...
       - printf '[{"name":"order-service","imageUri":"%s"}]' $REPOSITORY_URI:IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
