@@ -21,20 +21,20 @@ phases:
       - mvn clean install
       - echo Loggin into Amazon ECR...
       - aws --version
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 649787745281.dkr.ecr.us-east-1.amazonaws.com      
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 975049988065.dkr.ecr.us-east-1.amazonaws.com      
  
   build:
     commands:
       - echo Build completed on `date`
       - echo building the docker image
-      - docker build --platform linux/amd64 -t aws-demo .
-      - docker tag aws-demo:latest 649787745281.dkr.ecr.us-east-1.amazonaws.com/aws-demo:latest
+      - docker build --platform linux/amd64 -t java-app-cicd .
+      - docker tag java-app-cicd:latest 975049988065.dkr.ecr.us-east-1.amazonaws.com/java-app-cicd:latest
   
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push 649787745281.dkr.ecr.us-east-1.amazonaws.com/aws-demo:latest
+      - docker push 975049988065.dkr.ecr.us-east-1.amazonaws.com/java-app-cicd:latest
       - echo Writing image definitions file...
       - printf '[{"name":"order-service","imageUri":"%s"}]' $REPOSITORY_URI:IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
