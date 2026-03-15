@@ -1,5 +1,5 @@
-FROM bitnami/tomcat:9.0.89
-ENV ALLOW_EMPTY_PASSWORD=yes
-COPY target/*.war /opt/bitnami/tomcat/webapps
+FROM tomcat:9.0
+
+COPY target/*.war /usr/local/tomcat/webapps/
 
 
