@@ -52,13 +52,13 @@ steps:
     docker push \
     ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
 
-- name: Deploy CloudFormation
-  run: |
-    aws cloudformation deploy \
-    --template-file ecs-cft.yaml \
-    --stack-name $ECS_STACK_NAME \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides \
-    ImageUrl=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
+    #- name: Deploy CloudFormation
+  #run: |
+    #aws cloudformation deploy \
+    #--template-file ecs-cft.yaml \
+    #--stack-name $ECS_STACK_NAME \
+    #--capabilities CAPABILITY_NAMED_IAM \
+    #--parameter-overrides \
+    #    ImageUrl=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
 ```
 
