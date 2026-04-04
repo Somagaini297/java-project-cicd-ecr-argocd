@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy ECR Image to ECS Fargate with ALB
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+
+  ImageUrl:
+    Type: String
+    Description: ECR Image URI (e.g. <account>.dkr.ecr.us-east-1.amazonaws.com/myapp:latest)
+
+  ClusterName:
+    Type: String
+    Description: ECS Cluster Name
+
+  ExecutionRoleArn:
+    Type: String
+    Description: Existing ECS Task Execution Role ARN    
+
+Resources:
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName    
+
+  # TaskExecutionRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: ecs-tasks.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: my-task
+      Cpu: 512
+      Memory: 1024
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !Ref ExecutionRoleArn
+      ContainerDefinitions:
+        - Name: myapp
+          Image: !Ref ImageUrl
+          PortMappings:
+            - ContainerPort: 8080
+
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB SG
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0          
+
+  ECSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ECS SG
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8080
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref VpcId
+      HealthCheckPath: /login
+      Matcher:
+        HttpCode: 200-399
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      LoadBalancerArn: !Ref LoadBalancer
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+
+  ECSService:
+    Type: AWS::ECS::Service
+    DependsOn: Listener
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: 1
+      LaunchType: FARGATE
+      TaskDefinition: !Ref TaskDefinition
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          Subnets: !Ref Subnets
+          SecurityGroups:
+            - !Ref ECSSecurityGroup
+      LoadBalancers:
+        - ContainerName: myapp
+          ContainerPort: 8080
+          TargetGroupArn: !Ref TargetGroup
+
+Outputs:
+  LoadBalancerDNS:
+    Description: Access your app via this URL
+    Value: !GetAtt LoadBalancer.DNSName
