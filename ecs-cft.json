@@ -1,24 +1,22 @@
-{
-    "Parameters": [
-      {
-        "ParameterKey": "VpcId",
-        "ParameterValue": "vpc-0c09c131d33c520b6"
-      },
-      {
-        "ParameterKey": "Subnets",
-        "ParameterValue": "subnet-03ff8902845a707c4,subnet-094391d5e47caa7ba"
-      },
-      {
-        "ParameterKey": "ImageUrl",
-        "ParameterValue": "201262571139.dkr.ecr.us-east-1.amazonaws.com/myapp-repo:latest"
-      },
-      {
-        "ParameterKey": "ClusterName",
-        "ParameterValue": "java-app-ecs-cluster"
-      },
-      {
-        "ParameterKey": "ExecutionRoleArn",
-        "ParameterValue": "arn:aws:iam::201262571139:role/ecsTaskExecutionRole"
-      }
-    ]
+[
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0c09c131d33c520b6"
+  },
+  {
+    "ParameterKey": "Subnets",
+    "ParameterValue": "subnet-03ff8902845a707c4,subnet-094391d5e47caa7ba"
+  },
+  {
+    "ParameterKey": "ImageUrl",
+    "ParameterValue": "201262571139.dkr.ecr.us-east-1.amazonaws.com/myapp-repo:latest"
+  },
+  {
+    "ParameterKey": "ClusterName",
+    "ParameterValue": "java-app-ecs-cluster"
+  },
+  {
+    "ParameterKey": "ExecutionRoleArn",
+    "ParameterValue": "arn:aws:iam::201262571139:role/ecsTaskExecutionRole"
   }
+]
