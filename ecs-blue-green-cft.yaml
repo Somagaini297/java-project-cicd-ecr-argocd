@@ -86,6 +86,16 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroupBlue
 
+  TestListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Port: 8081
+      Protocol: HTTP
+      LoadBalancerArn: !Ref LoadBalancer
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroupGreen
+
 # ---------------- Task Definition ----------------
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -171,6 +181,9 @@ Resources:
             ProdTrafficRoute:
               ListenerArns:
                 - !Ref Listener
+            TestTrafficRoute:
+              ListenerArns:
+                - !Ref testListener                
 
       ECSService:
         ClusterName: !Ref ClusterName
