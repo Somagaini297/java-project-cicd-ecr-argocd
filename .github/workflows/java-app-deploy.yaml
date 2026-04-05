@@ -58,7 +58,7 @@ jobs:
    - name: Deploy CloudFormation
      run: |
       aws cloudformation deploy \
-      --template-file ecs-cft.yaml \
+      --template-file ecs-blue-green-cft.yaml \
       --stack-name $ECS_STACK_NAME \
       --capabilities CAPABILITY_NAMED_IAM \
       --parameter-overrides file://ecs-cft.json
