@@ -166,15 +166,15 @@ Resources:
       LoadBalancerInfo:
         TargetGroupPairInfoList:
           - TargetGroups:
-              - Name: !GetAtt TargetGroupBlue.TargetGroupName
-              - Name: !GetAtt TargetGroupGreen.TargetGroupName
+              - Name: !Ref TargetGroupBlue
+              - Name: !Ref TargetGroupGreen
             ProdTrafficRoute:
               ListenerArns:
                 - !Ref Listener
 
       ECSService:
         ClusterName: !Ref ClusterName
-        ServiceName: !GetAtt ECSService.Name
+        ServiceName: !Ref ECSService
 
 Outputs:
   LoadBalancerDNS:
