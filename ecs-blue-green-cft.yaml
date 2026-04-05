@@ -36,6 +36,10 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8081
+          ToPort: 8081
+          CidrIp: 0.0.0.0/0          
 
   ECSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -116,7 +120,9 @@ Resources:
 # ---------------- ECS Service ----------------
   ECSService:
     Type: AWS::ECS::Service
-    DependsOn: Listener
+    DependsOn: 
+      - Listener
+      - TestListener
     Properties:
       Cluster: !Ref ECSCluster
       DesiredCount: 1
@@ -168,6 +174,9 @@ Resources:
         DeploymentType: BLUE_GREEN
         DeploymentOption: WITH_TRAFFIC_CONTROL
 
+      TrafficRoutingConfig:
+        Type: AllAtOnce
+
       BlueGreenDeploymentConfiguration:
         TerminateBlueInstancesOnDeploymentSuccess:
           Action: TERMINATE
@@ -176,8 +185,8 @@ Resources:
       LoadBalancerInfo:
         TargetGroupPairInfoList:
           - TargetGroups:
-              - Name: !Ref TargetGroupBlue
-              - Name: !Ref TargetGroupGreen
+              - Name: !GetAtt TargetGroupBlue.TargetGroupName
+              - Name: !GetAtt TargetGroupGreen.TargetGroupName
             ProdTrafficRoute:
               ListenerArns:
                 - !Ref Listener
@@ -187,7 +196,7 @@ Resources:
 
       ECSService:
         ClusterName: !Ref ClusterName
-        ServiceName: !Ref ECSService
+        ServiceName: !GetAtt ECSService.Name
 
 Outputs:
   LoadBalancerDNS:
