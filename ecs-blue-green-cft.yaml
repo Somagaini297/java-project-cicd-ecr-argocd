@@ -17,6 +17,10 @@ Parameters:
   ExecutionRoleArn:
     Type: String
 
+  CodeDeployRoleArn:
+    Type: String
+    Description: Existing CodeDeploy IAM Role ARN    
+
 Resources:
 
 # ---------------- ECS Cluster ----------------
@@ -151,24 +155,24 @@ Resources:
     Properties:
       ComputePlatform: ECS
 
-  CodeDeployRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: codedeploy.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForECS
+  # CodeDeployRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: codedeploy.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForECS
 
   CodeDeployDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
       ApplicationName: !Ref CodeDeployApplication
-      ServiceRoleArn: !GetAtt CodeDeployRole.Arn
+      ServiceRoleArn: !Ref CodeDeployRoleArn
 
       DeploymentStyle:
         DeploymentType: BLUE_GREEN
