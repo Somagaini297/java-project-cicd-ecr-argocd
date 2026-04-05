@@ -22,5 +22,10 @@
   {
     "ParameterKey": "CodeDeployRoleArn",
     "ParameterValue": "arn:aws:iam::201262571139:role/CodeDeployECSRole"
-  }  
+  },
+  {
+    "ParameterKey": "CodeDeployAppName",
+    "ParameterValue": "java-app-deploy"
+  }     
 ]
+

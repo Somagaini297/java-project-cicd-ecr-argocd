@@ -19,7 +19,11 @@ Parameters:
 
   CodeDeployRoleArn:
     Type: String
-    Description: Existing CodeDeploy IAM Role ARN    
+    Description: Existing CodeDeploy IAM Role ARN 
+
+  CodeDeployAppName:
+    Type: String
+    Description: Name of the CodeDeploy Application
 
 Resources:
 
