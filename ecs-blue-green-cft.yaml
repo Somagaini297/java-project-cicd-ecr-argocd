@@ -196,7 +196,7 @@ Resources:
 
       ECSService:
         ClusterName: !Ref ClusterName
-        ServiceName: !GetAtt ECSService.Name
+        ServiceName: !Ref ECSService
 
 Outputs:
   LoadBalancerDNS:
