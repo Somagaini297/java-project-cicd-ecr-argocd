@@ -183,7 +183,7 @@ Resources:
                 - !Ref Listener
             TestTrafficRoute:
               ListenerArns:
-                - !Ref testListener                
+                - !Ref TestListener                
 
       ECSService:
         ClusterName: !Ref ClusterName
