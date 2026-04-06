@@ -204,7 +204,7 @@ Resources:
               ListenerArns:
                 - !Ref TestListener                
 
-      ECSService:
+      ECSServices:
         - ClusterName: !Ref ClusterName
           ServiceName: !GetAtt ECSService.Name
 
