@@ -175,6 +175,8 @@ Resources:
 
   CodeDeployDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
+    DependsOn:
+      - ECSService    
     Properties:
       ApplicationName: !Ref CodeDeployApplication
       ServiceRoleArn: !Ref CodeDeployRoleArn
@@ -204,7 +206,7 @@ Resources:
 
       ECSService:
         ClusterName: !Ref ClusterName
-        ServiceName: !Ref ECSService
+        ServiceName: !GetAtt ECSService.Name
 
 Outputs:
   LoadBalancerDNS:
