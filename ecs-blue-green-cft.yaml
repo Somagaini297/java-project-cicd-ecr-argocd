@@ -158,6 +158,7 @@ Resources:
     Type: AWS::CodeDeploy::Application
     Properties:
       ComputePlatform: ECS
+      ApplicationName: !Ref CodeDeployAppName
 
   # CodeDeployRole:
   #   Type: AWS::IAM::Role
@@ -182,8 +183,7 @@ Resources:
         DeploymentType: BLUE_GREEN
         DeploymentOption: WITH_TRAFFIC_CONTROL
 
-      TrafficRoutingConfig:
-        Type: AllAtOnce
+      DeploymentConfigName: CodeDeployDefault.ECSAllAtOnce
 
       BlueGreenDeploymentConfiguration:
         TerminateBlueInstancesOnDeploymentSuccess:
