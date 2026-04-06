@@ -205,8 +205,8 @@ Resources:
                 - !Ref TestListener                
 
       ECSService:
-        ClusterName: !Ref ClusterName
-        ServiceName: !GetAtt ECSService.Name
+        - ClusterName: !Ref ClusterName
+          ServiceName: !GetAtt ECSService.Name
 
 Outputs:
   LoadBalancerDNS:
