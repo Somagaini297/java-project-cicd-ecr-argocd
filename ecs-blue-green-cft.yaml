@@ -211,9 +211,9 @@ Resources:
               ListenerArns:
                 - !Ref TestListener                
 
-      ECSService:
-        ClusterName: !Ref ClusterName
-        ServiceName: !Ref ECSService
+      ECSServices:
+        - ClusterName: !Ref ClusterName
+          ServiceName: !Ref ECSService
 
 Outputs:
   LoadBalancerDNS:
