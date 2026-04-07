@@ -124,12 +124,12 @@ Resources:
           Image: !Ref ImageUrl
           PortMappings:
             - ContainerPort: 8080
-      LogConfiguration:
-        LogDriver: awslogs
-        Options:
-          awslogs-group: /ecs/myapp
-          awslogs-region: us-east-1
-          awslogs-stream-prefix: ecs
+      # LogConfiguration:
+      #   LogDriver: awslogs
+      #   Options:
+      #     awslogs-group: /ecs/myapp
+      #     awslogs-region: us-east-1
+      #     awslogs-stream-prefix: ecs
                
 
 # ---------------- ECS Service ----------------
